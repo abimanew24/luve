@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>6 KAMU</title>
-    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=Playfair+Display:wght@500;700&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=Playfair+Display:wght@500;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
     <style>
@@ -101,8 +103,34 @@
             border-color: #f1c40f;
         }
 
-        /* --- FOOTER --- */
+        /* --- FOOTER & BUTTON --- */
         .footer { padding: 100px 20px; text-align: center; background: #1a1a1a; color: #fff; }
+        
+        /* TOMBOL BUKA VIDEO (Style Baru) */
+        .btn-open-video {
+            margin-top: 20px;
+            padding: 15px 40px;
+            background-color: #ff9eb5; /* Pink Pastel */
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(255, 158, 181, 0.4);
+            transition: transform 0.3s ease;
+            animation: pulse 2s infinite; /* Berdenyut biar di-notice */
+        }
+        .btn-open-video:hover {
+            transform: scale(1.1);
+            background-color: #ff85a3;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
 
         /* --- MODAL STYLES --- */
         @keyframes fadeInEffect { from { opacity: 0; } to { opacity: 1; } }
@@ -126,97 +154,36 @@
             animation: popUpEffect 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        /* --- BAGIAN MODAL CERITA FOTO (INI YANG DIPERBAIKI) --- */
+        /* --- PHOTO STORY MODAL --- */
         .photo-story-content {
-            display: flex; 
-            background: #F4F1EA; 
-            max-width: 1100px; 
-            width: 100%; 
-            max-height: 85vh; /* Tinggi Maksimal Desktop */
-            border-radius: 8px; 
-            overflow: hidden; 
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            display: flex; background: #F4F1EA; max-width: 1100px; width: 100%; max-height: 85vh;
+            border-radius: 8px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
             animation: popUpEffect 0.5s cubic-bezier(0.19, 1, 0.22, 1);
         }
-        .story-img-container { 
-            flex: 1.5; 
-            background: #000; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-        }
-        .story-img-container img { 
-            width: 100%; 
-            height: 100%; 
-            object-fit: contain; 
-            max-height: 85vh; 
-        }
-        .story-text-container { 
-            flex: 1; 
-            padding: 40px; 
-            overflow-y: auto; /* Bisa discroll kalo teks panjang */
-            display: flex; 
-            flex-direction: column; 
-            justify-content: center; 
-        }
+        .story-img-container { flex: 1.5; background: #000; display: flex; align-items: center; justify-content: center; }
+        .story-img-container img { width: 100%; height: 100%; object-fit: contain; max-height: 85vh; }
+        .story-text-container { flex: 1; padding: 40px; overflow-y: auto; display: flex; flex-direction: column; justify-content: center; }
         .story-title { font-family: 'Playfair Display', serif; font-size: 2rem; margin-bottom: 20px; color: #222; }
         .story-desc { font-family: 'Lora', serif; font-size: 1.1rem; line-height: 1.8; color: #555; white-space: pre-line; }
         
-        /* Tombol Close Khusus Text (biar user tau cara tutup) */
         .close-text-btn {
-            display: none; /* Default hide di desktop */
+            display: none; 
             margin-top: 20px; padding: 10px; background: #333; color: white; text-align: center; border-radius: 5px; cursor: pointer;
         }
 
-        /* =========================================
-           RESPONSIVE MOBILE (FIXED!)
-           ========================================= */
+        /* RESPONSIVE */
         @media (max-width: 768px) {
             .main-title { font-size: 4rem; }
             .chapter-title { font-size: 2.5rem; }
-            
-            /* Grid jadi 1 kolom */
             .photo-collage { grid-template-columns: 1fr; }
             .photo-item { height: 250px; grid-column: auto !important; grid-row: auto !important; margin-bottom: 10px; }
             
-            /* FIX MODAL POPUP DI HP */
-            .photo-story-content { 
-                flex-direction: column; /* Jadi atas bawah */
-                width: 95%; /* Lebar layar hampir full */
-                height: 85vh; /* Paksa tinggi 85% layar */
-                max-height: 85vh; 
-            }
-            
-            .story-img-container { 
-                flex: 0 0 50%; /* GAMBAR CUMA BOLEH AMBIL 50% TINGGI */
-                height: 50%;
-                background: #000;
-            }
-            
-            .story-img-container img {
-                object-fit: contain; /* Foto Vertikal GAK AKAN KEPOTONG/KEZOOM */
-                width: 100%;
-                height: 100%;
-            }
-
-            .story-text-container { 
-                flex: 1; /* Sisa ruang (50%) buat teks */
-                height: auto;
-                padding: 20px; 
-                justify-content: flex-start;
-                overflow-y: auto; /* WAJIB: Biar bisa discroll pesannya */
-            }
-
-            .story-title {
-                font-size: 1.5rem;
-                margin-top: 0;
-            }
-            
-            .story-desc {
-                font-size: 1rem;
-            }
-
-            /* Munculin tombol tutup di dalam box text biar gampang */
+            .photo-story-content { flex-direction: column; width: 95%; height: 85vh; max-height: 85vh; }
+            .story-img-container { flex: 0 0 50%; height: 50%; background: #000; }
+            .story-img-container img { object-fit: contain; width: 100%; height: 100%; }
+            .story-text-container { flex: 1; height: auto; padding: 20px; justify-content: flex-start; overflow-y: auto; }
+            .story-title { font-size: 1.5rem; margin-top: 0; }
+            .story-desc { font-size: 1rem; }
             .close-text-btn { display: block; }
         }
     </style>
@@ -227,9 +194,7 @@
 
     <div id="intro">
         <div class="main-title">6 KAMU</div>
-        <div class="sub-title">
-            .kamu dan seisinya.
-        </div>
+        <div class="sub-title">.kamu dan seisinya.</div>
         <button class="btn-start" onclick="start()">Buka Halaman</button>
     </div>
 
@@ -312,7 +277,7 @@
         <div class="content-wrapper">
             <div class="chapter-num" data-aos="fade-down">Bab Enam</div>
             <h2 class="chapter-title" data-aos="fade-up">My luvee</h2>
-            <p class="desc" data-aos="fade-up">"Your presence is not a scorching sun, but the soothing moonlight that washes away my weariness in silence. Happy birthday, my love; keep shining gently, remaining a remedy for the worlds noisy chaos. Let me be the vast night, a place where your light may freely reign forever."</p>
+            <p class="desc" data-aos="fade-up">"Your presence is not a scorching sun, but the soothing moonlight that washes away my weariness in silence..."</p>
             <div class="photo-collage" data-aos="zoom-in">
                 <div class="photo-item clickable-photo"><img src="galeri/foto26.jpg" alt=""></div>
                 <div class="photo-item clickable-photo"><img src="galeri/foto27.jpg" alt=""></div>
@@ -326,12 +291,15 @@
     <div class="footer">
         <h2 style="font-family: 'Playfair Display', serif; font-size: 3rem; margin-bottom: 20px;">terima & kasih</h2>
         <p style="margin-bottom: 30px; font-style: italic;">Ada satu hal lagi...</p>
-        <img src="roll-film.png" style="width: 80px; cursor: pointer; opacity: 0.8; transition: 0.3s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.8" onclick="playVideo()">
+        
+        <button class="btn-open-video" onclick="playVideo()">
+            🎥 Putar Video Spesial
+        </button>
     </div>
 
     <div id="video-modal" class="modal-overlay">
         <div class="close-modal-btn" onclick="closeVideo()">&times;</div>
-        <video id="myVideo" controls><source src="your-video.mp4" type="video/mp4"></video>
+        <video id="myVideo" controls><source src="./video/your-video.mp4" type="video/mp4"></video>
     </div>
 
     <div id="photo-story-modal" class="modal-overlay" onclick="closePhotoStory(event)">
@@ -364,7 +332,6 @@
         const storyDescPlaceholder = document.getElementById('story-desc-placeholder');
 
         // --- DATABASE CERITA (30 FOTO) ---
-        // EDIT KATA-KATA DISINI YA
         const photoCaptions = {
             'foto1.jpg': 'awalnya malu banget ajak kamu foto, tapi aku kan keren yah, dengn gagah berani aku bilang foto yuuu, ehh bidadarinya mauu.',
             'foto2.jpg': 'foto gini tu lucu banget, dan first time aku ajak kamu mlipir di pinggir jalan ehe.',
@@ -433,13 +400,15 @@
         function playVideo() {
             videoModal.style.display = 'flex';
             vid.play();
-            music.volume = 0.2;
+            // FUNGSI BARU: Musik background PAUSE total biar ga tabrakan
+            music.pause(); 
         }
 
         function closeVideo() {
             videoModal.style.display = 'none';
             vid.pause();
-            music.volume = 1;
+            // FUNGSI BARU: Musik background PLAY LAGI
+            music.play();
         }
     </script>
 </body>
