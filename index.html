@@ -7,377 +7,173 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=Playfair+Display:wght@500;700&family=Montserrat:wght@300;400;600&family=Sacramento&display=swap" rel="stylesheet">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-
-    <style>
-        /* --- RESET & BASIC --- */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            overflow-x: hidden; 
-            background-color: #F4F1EA; 
-            color: #333;
-            font-family: 'Lora', serif;
-        }
-
-        body::before {
-            content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-image: url("https://www.transparenttextures.com/patterns/cream-paper.png");
-            opacity: 0.5; pointer-events: none; z-index: 999;
-        }
-
-        /* =========================================
-           1. PASSWORD SCREEN
-        ========================================= */
-        #password-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-            background: #1a1a1a; z-index: 30000;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            color: #F4F1EA; transition: opacity 0.8s ease;
-        }
-        .pass-input {
-            padding: 12px 20px; font-family: 'Montserrat', sans-serif;
-            border: 2px solid #F4F1EA; background: transparent; color: white;
-            border-radius: 50px; outline: none; text-align: center; width: 280px;
-            margin-bottom: 20px; font-size: 1rem;
-        }
-        .btn-submit {
-            padding: 10px 35px; background: #F4F1EA; color: #111; border: none;
-            border-radius: 50px; cursor: pointer; font-family: 'Montserrat', sans-serif;
-            font-weight: 600; transition: 0.3s;
-        }
-        .btn-submit:hover { transform: scale(1.1); box-shadow: 0 0 15px rgba(255,255,255,0.5); }
-
-        /* =========================================
-           2. ENVELOPE SCREEN (ANIMASI SURAT)
-        ========================================= */
-        #envelope-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-            background: #D8E2DC; /* Sage Green Background */
-            z-index: 20000; display: none; justify-content: center; align-items: center;
-            flex-direction: column; transition: opacity 1s;
-        }
-
-        .envelope-wrapper {
-            position: relative; width: 300px; height: 200px; cursor: pointer;
-            transition: transform 0.5s;
-        }
-        .envelope-wrapper:hover { transform: scale(1.05); }
-
-        .envelope {
-            position: relative; width: 100%; height: 100%;
-        }
-
-        .env-back {
-            position: absolute; width: 100%; height: 100%; background: #b08d75; /* Coklat Amplop */
-            border-radius: 5px;
-        }
-
-        .letter-card {
-            position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
-            width: 90%; height: 90%; background: #fff;
-            padding: 20px; text-align: center;
-            transition: all 1s ease-in-out;
-            z-index: 1; /* Di dalam amplop */
-            display: flex; flex-direction: column; align-items: center;
-            box-shadow: 0 -5px 10px rgba(0,0,0,0.1);
-        }
-
-        .env-pocket {
-            position: absolute; bottom: 0; left: 0; width: 100%; height: 100%;
-            border-bottom-left-radius: 5px; border-bottom-right-radius: 5px;
-            border-top: 100px solid transparent;
-            border-right: 150px solid #c29d82; /* Coklat Muda */
-            border-bottom: 100px solid #c29d82;
-            border-left: 150px solid #c29d82;
-            z-index: 2;
-        }
-
-        .env-flap {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            border-top: 110px solid #a3816a; /* Coklat Tua */
-            border-right: 150px solid transparent;
-            border-bottom: 90px solid transparent;
-            border-left: 150px solid transparent;
-            border-radius: 5px; z-index: 3;
-            transform-origin: top; transition: transform 0.6s ease 0.2s, z-index 0.2s;
-        }
-
-        /* Jantung di tengah amplop */
-        .heart-seal {
-            position: absolute; top: 80px; left: 50%; transform: translate(-50%, -50%);
-            font-size: 40px; color: #d63031; z-index: 4;
-            text-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            transition: opacity 0.5s;
-        }
-
-        .tap-hint {
-            margin-top: 50px; font-family: 'Montserrat', sans-serif; 
-            color: #555; animation: bounce 2s infinite;
-        }
-
-        /* --- ANIMASI BUKA SURAT --- */
-        .envelope-wrapper.open .env-flap {
-            transform: rotateX(180deg); z-index: 0;
-        }
-        .envelope-wrapper.open .heart-seal { opacity: 0; }
-        
-        .envelope-wrapper.open .letter-card {
-            bottom: 150px; /* Surat naik ke atas */
-            height: 350px; /* Surat memanjang */
-            z-index: 4; /* Pindah ke depan */
-            transform: translateX(-50%) scale(1.5); /* Zoom in biar jelas */
-        }
-
-        /* Isi Surat */
-        .letter-content { opacity: 0; transition: opacity 0.5s 1s; width: 100%; height: 100%; overflow-y: auto; }
-        .envelope-wrapper.open .letter-content { opacity: 1; }
-
-        .btn-gallery {
-            margin-top: 15px; padding: 5px 15px; background: #ff9eb5; color: white;
-            border: none; border-radius: 20px; cursor: pointer; font-size: 0.8rem;
-        }
-
-        /* =========================================
-           STYLE HALAMAN UTAMA (6 CHAPTER) - TETAP
-        ========================================= */
-        #intro {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-            background: #111; color: #F4F1EA; z-index: 10000;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1);
-        }
-        .main-title { font-family: 'Playfair Display', serif; font-size: 6rem; letter-spacing: 5px; line-height: 1; text-align: center;}
-        .sub-title { font-family: 'Montserrat', sans-serif; letter-spacing: 3px; text-transform: uppercase; margin-top: 20px; opacity: 0.8; text-align: center; }
-        .btn-start {
-            margin-top: 50px; padding: 15px 50px; border: 1px solid #F4F1EA; background: transparent; 
-            color: #F4F1EA; cursor: pointer; font-family: 'Montserrat', sans-serif; letter-spacing: 2px;
-            transition: 0.3s;
-        }
-        .btn-start:hover { background: #F4F1EA; color: #111; }
-
-        section {
-            min-height: 100vh; padding: 80px 20px;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            position: relative; overflow: hidden;
-        }
-        .bg-cream { background-color: #F4F1EA; color: #444; }
-        .bg-green { background-color: #D8E2DC; color: #3a4b40; }
-        .content-wrapper { max-width: 1000px; width: 100%; z-index: 2; }
-
-        .chapter-num { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: #999; text-transform: uppercase; letter-spacing: 2px; text-align: center; margin-bottom: 10px; }
-        .chapter-title { font-family: 'Playfair Display', serif; font-size: 3.5rem; text-align: center; margin-bottom: 40px; color: #222; }
-        .desc { text-align: center; max-width: 600px; margin: 0 auto 50px auto; font-size: 1.1rem; line-height: 1.8; font-style: italic; color: #666; }
-
-        .photo-collage { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding: 20px; margin-bottom: 50px; }
-        .photo-item { position: relative; height: 250px; border-radius: 6px; overflow: hidden; box-shadow: 5px 10px 20px rgba(0,0,0,0.15); transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); cursor: pointer; background: #fff; border: 4px solid #fff; }
-        .photo-item img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
-        .photo-item:nth-child(1) { grid-column: span 2; grid-row: span 2; height: 100%; transform: rotate(-2deg); }
-        .photo-item:nth-child(2) { transform: rotate(3deg) translateY(20px); }
-        .photo-item:nth-child(3) { transform: rotate(-1deg); }
-        .photo-item:nth-child(4) { grid-column: span 2; transform: rotate(2deg); }
-        .photo-item:nth-child(5) { transform: rotate(-3deg); }
-        .photo-item:hover { transform: scale(1.05) rotate(0deg) translateY(0) !important; z-index: 100 !important; box-shadow: 15px 25px 50px rgba(0,0,0,0.3); border-color: #f1c40f; }
-
-        .footer { padding: 100px 20px; text-align: center; background: #1a1a1a; color: #fff; }
-        
-        .btn-open-video {
-            margin-top: 20px; padding: 15px 40px; background-color: #ff9eb5; color: #fff;
-            font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 1.2rem;
-            border: none; border-radius: 50px; cursor: pointer; box-shadow: 0 5px 20px rgba(255, 158, 181, 0.4);
-            transition: transform 0.3s ease; animation: pulse 2s infinite; 
-        }
-        .btn-open-video:hover { transform: scale(1.1); background-color: #ff85a3; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
-
-        /* MODAL */
-        @keyframes fadeInEffect { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes popUpEffect { from { opacity: 0; transform: scale(0.9) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.97); display: none; justify-content: center; align-items: center; z-index: 11000; padding: 20px; animation: fadeInEffect 0.4s ease-out; }
-        .close-modal-btn { position: absolute; top: 20px; right: 30px; font-size: 3rem; color: #fff; cursor: pointer; z-index: 11002; transition: 0.3s; }
-        .close-modal-btn:hover { transform: rotate(90deg) scale(1.1); color: #ff6b6b; }
-        .video-wrapper-stack { display: flex; flex-direction: column; align-items: center; width: 90%; max-width: 800px; animation: popUpEffect 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        #video-modal iframe { width: 100%; aspect-ratio: 16/9; box-shadow: 0 0 50px black; border-radius: 8px; }
-        .cute-close-btn { margin-top: 25px; padding: 12px 35px; background-color: #ff9eb5; color: white; border: none; border-radius: 50px; font-family: 'Montserrat', sans-serif; font-weight: 600; cursor: pointer; box-shadow: 0 5px 15px rgba(255, 158, 181, 0.4); transition: all 0.3s ease; display: flex; align-items: center; gap: 10px; }
-        .cute-close-btn:hover { background-color: #ff85a3; transform: translateY(-3px) scale(1.05); }
-
-        .photo-story-content { display: flex; background: #F4F1EA; max-width: 1100px; width: 100%; max-height: 85vh; border-radius: 8px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.5); animation: popUpEffect 0.5s cubic-bezier(0.19, 1, 0.22, 1); }
-        .story-img-container { flex: 1.5; background: #000; display: flex; align-items: center; justify-content: center; }
-        .story-img-container img { width: 100%; height: 100%; object-fit: contain; max-height: 85vh; }
-        .story-text-container { flex: 1; padding: 40px; overflow-y: auto; display: flex; flex-direction: column; justify-content: center; }
-        .story-title { font-family: 'Playfair Display', serif; font-size: 2rem; margin-bottom: 20px; color: #222; }
-        .story-desc { font-family: 'Lora', serif; font-size: 1.1rem; line-height: 1.8; color: #555; white-space: pre-line; }
-        .close-text-btn { display: none; margin-top: 20px; padding: 10px; background: #333; color: white; text-align: center; border-radius: 5px; cursor: pointer; }
-
-        @media (max-width: 768px) {
-            .main-title { font-size: 4rem; }
-            .chapter-title { font-size: 2.5rem; }
-            .photo-collage { grid-template-columns: 1fr; }
-            .photo-item { height: 250px; grid-column: auto !important; grid-row: auto !important; margin-bottom: 10px; }
-            .photo-story-content { flex-direction: column; width: 95%; height: 85vh; max-height: 85vh; }
-            .story-img-container { flex: 0 0 50%; height: 50%; background: #000; }
-            .story-img-container img { object-fit: contain; width: 100%; height: 100%; }
-            .story-text-container { flex: 1; height: auto; padding: 20px; justify-content: flex-start; overflow-y: auto; }
-            .story-title { font-size: 1.5rem; margin-top: 0; }
-            .story-desc { font-size: 1rem; }
-            .close-text-btn { display: block; }
-            
-            .envelope-wrapper { width: 250px; height: 160px; } /* Mobile Envelope */
-            .envelope-wrapper.open .letter-card { transform: translateX(-50%) scale(1.2); bottom: 100px; }
-        }
-    </style>
+    <link rel="stylesheet" href="style.css"> 
 </head>
 <body>
 
     <audio id="bg-music" loop><source src="lagu-romantis.mp3" type="audio/mpeg"></audio>
 
     <div id="password-screen">
-        <h2 style="font-family: 'Playfair Display'; margin-bottom: 20px;">Siapa Kamu?</h2>
-        <input type="text" id="pass-input" class="pass-input" placeholder="Masukkan Password...">
-        <button class="btn-submit" onclick="checkPassword()">Masuk</button>
-    </div>
-
-    <div id="envelope-screen">
-        <div class="envelope-wrapper" id="envelope" onclick="openEnvelope()">
-            <div class="envelope">
-                <div class="env-back"></div>
-                
-                <div class="letter-card">
-                    <div class="letter-content">
-                        <h2 style="font-family: 'Sacramento', cursive; color: #d63031;">Happy Birthday</h2>
-                        <p style="font-size: 0.7rem; line-height: 1.5; margin-top: 10px; color: #555;">
-                            Hai sayang, selamat ulang tahun!<br><br>
-                            Ini sedikit hadiah kecil spesial buat kamu.<br>
-                            Maaf kalau sederhana, tapi ini tulus dari hati.<br>
-                            Semoga kamu suka ya!
-                        </p>
-                        <button class="btn-gallery" onclick="goToIntro(event)">Lanjut Galeri -></button>
-                    </div>
-                </div>
-
-                <div class="env-pocket"></div>
-                <div class="env-flap"></div>
-                <div class="heart-seal">💖</div>
-            </div>
-        </div>
-        <p class="tap-hint">Klik amplopnya...</p>
-    </div>
-
-    <div id="intro">
-        <div class="main-title">6 KAMU</div>
-        <div class="sub-title">.kamu dan seisinya.</div>
-        <button class="btn-start" onclick="startGallery()">Buka Halaman</button>
-    </div>
-
-    <section class="bg-cream">
-        <div class="content-wrapper">
-            <div class="chapter-num" data-aos="fade-down">Bab Satu</div>
-            <h2 class="chapter-title" data-aos="fade-up">Awal Kita</h2>
-            <p class="desc" data-aos="fade-up">"Kala dua orang asing perlahan mengeja kata 'rumah' pada satu sama lain."</p>
-            <div class="photo-collage" data-aos="zoom-in">
-                <div class="photo-item clickable-photo"><img src="galeri/foto1.jpg" alt=""></div>
-                <div class="photo-item clickable-photo"><img src="galeri/foto2.jpg" alt=""></div>
-                <div class="photo-item clickable-photo"><img src="galeri/foto3.jpg" alt=""></div>
-                <div class="photo-item clickable-photo"><img src="galeri/foto4.jpg" alt=""></div>
-                <div class="photo-item clickable-photo"><img src="galeri/foto5.jpg" alt=""></div>
-            </div>
-        </div>
-    </section>
-
-    <section class="bg-green">
-        <div class="content-wrapper">
-            <div class="chapter-num" data-aos="fade-down">Bab Dua</div>
-            <h2 class="chapter-title" data-aos="fade-up">Our Trip</h2>
-            <p class="desc" data-aos="fade-up">"Jejak langkah kita menjelajah tempat baru bersama."</p>
-            <div class="photo-collage" data-aos="zoom-in">
-                <div class="photo-item clickable-photo"><img src="galeri/foto6.jpg" alt=""></div>
-                <div class="photo-item clickable-photo"><img src="galeri/foto7.jpg" alt=""></div>
-                <div class="photo-item clickable-photo"><img src="galeri/foto8.jpg" alt=""></div>
-                <div class="photo-item clickable-photo"><img src="galeri/foto9.jpg" alt=""></div>
-                <div class="photo-item clickable-photo"><img src="galeri/foto10.jpg" alt=""></div>
-            </div>
-        </div>
-    </section>
-
-    <section class="bg-cream">
-        <div class="content-wrapper">
-            <div class="chapter-num" data-aos="fade-down">Bab Tiga</div>
-            <h2 class="chapter-title" data-aos="fade-up">Ponyoo</h2>
-            <p class="desc" data-aos="fade-up">"luvee versi agak ngga eling."</p>
-            <div class="photo-collage" data-aos="zoom-in">
-                <div class="photo-item clickable-photo"><img src="galeri/foto11.jpg" alt=""></div>
-                <div class="photo-item clickable-photo"><img src="galeri/foto12.jpg" alt=""></div>
-                <div class="photo-item clickable-photo"><img src="galeri/foto13.jpg" alt=""></div>
-                <div class="photo-item clickable-photo"><img src="galeri/foto14.jpg" alt=""></div>
-                <div class="photo-item clickable-photo"><img src="galeri/foto15.jpg" alt=""></div>
-            </div>
-        </div>
-    </section>
-
-    <section class="bg-green">
-        <div class="content-wrapper">
-            <div class="chapter-num" data-aos="fade-down">Bab Empat</div>
-            <h2 class="chapter-title" data-aos="fade-up">Kulineran</h2>
-            <p class="desc" data-aos="fade-up">"Bukti otentik kalau kita adalah pasangan yang doyan makan."</p>
-            <div class="photo-collage" data-aos="zoom-in">
-                <div class="photo-item clickable-photo"><img src="galeri/foto16.jpg" alt=""></div>
-                <div class="photo-item clickable-photo"><img src="galeri/foto17.jpg" alt=""></div>
-                <div class="photo-item clickable-photo"><img src="galeri/foto18.jpg" alt=""></div>
-                <div class="photo-item clickable-photo"><img src="galeri/foto19.jpg" alt=""></div>
-                <div class="photo-item clickable-photo"><img src="galeri/foto20.jpg" alt=""></div>
-            </div>
-        </div>
-    </section>
-
-    <section class="bg-cream">
-        <div class="content-wrapper">
-            <div class="chapter-num" data-aos="fade-down">Bab Lima</div>
-            <h2 class="chapter-title" data-aos="fade-up">Outfit Check</h2>
-            <p class="desc" data-aos="fade-up">"Momen sederhana yang justru paling berkesan di hati."</p>
-            <div class="photo-collage" data-aos="zoom-in">
-                <div class="photo-item clickable-photo"><img src="galeri/foto21.jpg" alt=""></div>
-                <div class="photo-item clickable-photo"><img src="galeri/foto22.jpg" alt=""></div>
-                <div class="photo-item clickable-photo"><img src="galeri/foto23.jpg" alt=""></div>
-                <div class="photo-item clickable-photo"><img src="galeri/foto24.jpg" alt=""></div>
-                <div class="photo-item clickable-photo"><img src="galeri/foto25.jpg" alt=""></div>
-            </div>
-        </div>
-    </section>
-
-    <section class="bg-green">
-        <div class="content-wrapper">
-            <div class="chapter-num" data-aos="fade-down">Bab Enam</div>
-            <h2 class="chapter-title" data-aos="fade-up">My luvee</h2>
-            <p class="desc" data-aos="fade-up">"Your presence is not a scorching sun, but the soothing moonlight that washes away my weariness in silence..."</p>
-            <div class="photo-collage" data-aos="zoom-in">
-                <div class="photo-item clickable-photo"><img src="galeri/foto26.jpg" alt=""></div>
-                <div class="photo-item clickable-photo"><img src="galeri/foto27.jpg" alt=""></div>
-                <div class="photo-item clickable-photo"><img src="galeri/foto28.jpg" alt=""></div>
-                <div class="photo-item clickable-photo"><img src="galeri/foto29.jpg" alt=""></div>
-                <div class="photo-item clickable-photo"><img src="galeri/foto30.jpg" alt=""></div>
-            </div>
-        </div>
-    </section>
-
-    <div class="footer">
-        <h2 style="font-family: 'Playfair Display', serif; font-size: 3rem; margin-bottom: 20px;">terima & kasih</h2>
-        <p style="margin-bottom: 30px; font-style: italic;">Ada satu hal lagi...</p>
+        <div class="pass-title">6 KAMU</div>
+        <div class="pass-sub">.kamu dan seisinya.</div>
         
-        <button class="btn-open-video" onclick="playVideo()">
-            🎥 Putar Video Spesial
-        </button>
+        <div class="pass-label">masukkan kata kuncinya di sini yah</div>
+        
+        <input type="text" id="pass-input" class="pass-input" placeholder="hayoo apaaa...">
+        <button class="btn-submit" onclick="checkPassword()">MASUK</button>
     </div>
 
-    <div id="video-modal" class="modal-overlay">
+    <div id="letter-screen">
+        <div class="letter-paper">
+            <div class="letter-header">
+                Untuk Kamu ❤️
+            </div>
+            
+            <div class="letter-scroll-area">
+                "Hai, Luvee.
+
+Tepat hari ini, semesta menjadi saksi turunnya embun dari pohon kehidupan. Hari berseri menyambut kedatangan malaikat kecil yang kini telah bersiap merentangkan sayap indahnya sebagai bidadari. Di sinilah ia lahir, memijakkan kaki kecilnya pada dunia yang menuntutnya untuk terus tumbuh, meski terkadang harus melewati rasa sakit yang kian menggigit.
+
+Ia adalah gadis kecil yang diterpa badai, namun memilih untuk tetap bertahan. Dengan penuh harapan, ia jadikan dirinya senyum bagi dunia, meski seringkali ia takut memperlihatkan lukanya sendiri. Orang melihatnya ceria, padahal ada mendung di matanya yang tak sanggup diuraikan kata-kata.
+
+Namun begitulah dia, malaikat kecil yang kini mengepakkan sayapnya. Seringkali patah, seringkali terluka, namun tak pernah lelah berjuang—bukan hanya untuk dirinya, tapi untuk dunianya. Penulis pun sempat terheran, 'Kok dia bisa sekuat itu?' Hingga akhirnya sang penulis sadar, yang membuat sang bidadari bertahan adalah harapan. Dan kini, penulis berjanji untuk membimbing harapan itu mendekat, bukan hanya untuk dirinya sendiri, melainkan untuk 'kita'.
+
+Selamat ulang tahun, Sayang.
+
+Sang penulis berjanji akan menggenggam bara yang hendak melukaimu. Sang penulis akan terus berusaha memperkenalkan harapan. Percayalah, kamu adalah satu-satunya yang terbaik baginya. Maafkan jika dalam prosesku mencintaimu, aku sempat menorehkan luka dan kecewa. Namun satu yang pasti, selama 'kita' masih ada, 'terima' dan 'kasih' akan menjadi kalimat yang selalu bergema.
+
+Untuk itu, aku, Nowo Abimanyu, berjanji untuk membersamai sang bidadari selamanya. Sekali lagi, selamat bertumbuh, Sayang. Harapanku, kamu tetap menjadi dirimu yang semakin kuat untuk memenangkan kita.
+
+Love you, Bunneo."
+            </div>
+
+            <div class="letter-footer">
+                <button class="btn-next-chapter" onclick="closeLetter()">Lanjut ke Chapter -></button>
+            </div>
+        </div>
+    </div>
+
+    <div id="main-content" style="display: none;">
+
+        <div style="text-align: center; padding-top: 100px; padding-bottom: 20px; background-color: #F4F1EA;">
+        <h1 style="font-family: 'Playfair Display', serif; font-size: 5rem; font-weight: 500; letter-spacing: 10px; text-transform: uppercase; margin: 0; color: #2c2c2c; line-height: 1.2;" data-aos="zoom-in">
+            Our Journey
+        </h1>
+        
+        <p style="font-family: 'Montserrat', sans-serif; font-size: 0.9rem; letter-spacing: 6px; text-transform: uppercase; color: #888; margin-top: 15px;" data-aos="fade-up" data-aos-delay="300">
+            The Story Begins Here
+        </p>
+
+        <div style="width: 1px; height: 100px; background: linear-gradient(to bottom, #333, transparent); margin: 40px auto 0 auto;" data-aos="fade-down" data-aos-delay="500"></div>
+    </div>
+
+    <section class="bg-cream">
+
+        <section class="bg-cream">
+            <div class="content-wrapper">
+                <div class="chapter-num" data-aos="fade-down">Bab Satu</div>
+                <h2 class="chapter-title" data-aos="fade-up">Awal Kita</h2>
+                <p class="desc" data-aos="fade-up">"Kala dua orang asing perlahan mengeja kata 'rumah' pada satu sama lain."</p>
+                <div class="photo-collage" data-aos="zoom-in">
+                    <div class="photo-item clickable-photo"><img src="galeri/foto1.jpg" alt=""></div>
+                    <div class="photo-item clickable-photo"><img src="galeri/foto2.jpg" alt=""></div>
+                    <div class="photo-item clickable-photo"><img src="galeri/foto3.jpg" alt=""></div>
+                    <div class="photo-item clickable-photo"><img src="galeri/foto4.jpg" alt=""></div>
+                    <div class="photo-item clickable-photo"><img src="galeri/foto5.jpg" alt=""></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-green">
+            <div class="content-wrapper">
+                <div class="chapter-num" data-aos="fade-down">Bab Dua</div>
+                <h2 class="chapter-title" data-aos="fade-up">Our Trip</h2>
+                <p class="desc" data-aos="fade-up">"Jejak langkah kita menjelajah tempat baru bersama."</p>
+                <div class="photo-collage" data-aos="zoom-in">
+                    <div class="photo-item clickable-photo"><img src="galeri/foto6.jpg" alt=""></div>
+                    <div class="photo-item clickable-photo"><img src="galeri/foto7.jpg" alt=""></div>
+                    <div class="photo-item clickable-photo"><img src="galeri/foto8.jpg" alt=""></div>
+                    <div class="photo-item clickable-photo"><img src="galeri/foto9.jpg" alt=""></div>
+                    <div class="photo-item clickable-photo"><img src="galeri/foto10.jpg" alt=""></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-cream">
+            <div class="content-wrapper">
+                <div class="chapter-num" data-aos="fade-down">Bab Tiga</div>
+                <h2 class="chapter-title" data-aos="fade-up">Ponyoo</h2>
+                <p class="desc" data-aos="fade-up">"luvee versi agak ngga eling."</p>
+                <div class="photo-collage" data-aos="zoom-in">
+                    <div class="photo-item clickable-photo"><img src="galeri/foto11.jpg" alt=""></div>
+                    <div class="photo-item clickable-photo"><img src="galeri/foto12.jpg" alt=""></div>
+                    <div class="photo-item clickable-photo"><img src="galeri/foto13.jpg" alt=""></div>
+                    <div class="photo-item clickable-photo"><img src="galeri/foto14.jpg" alt=""></div>
+                    <div class="photo-item clickable-photo"><img src="galeri/foto15.jpg" alt=""></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-green">
+            <div class="content-wrapper">
+                <div class="chapter-num" data-aos="fade-down">Bab Empat</div>
+                <h2 class="chapter-title" data-aos="fade-up">Kulineran</h2>
+                <p class="desc" data-aos="fade-up">"Bukti otentik kalau kita adalah pasangan yang doyan makan."</p>
+                <div class="photo-collage" data-aos="zoom-in">
+                    <div class="photo-item clickable-photo"><img src="galeri/foto16.jpg" alt=""></div>
+                    <div class="photo-item clickable-photo"><img src="galeri/foto17.jpg" alt=""></div>
+                    <div class="photo-item clickable-photo"><img src="galeri/foto18.jpg" alt=""></div>
+                    <div class="photo-item clickable-photo"><img src="galeri/foto19.jpg" alt=""></div>
+                    <div class="photo-item clickable-photo"><img src="galeri/foto20.jpg" alt=""></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-cream">
+            <div class="content-wrapper">
+                <div class="chapter-num" data-aos="fade-down">Bab Lima</div>
+                <h2 class="chapter-title" data-aos="fade-up">Outfit Check</h2>
+                <p class="desc" data-aos="fade-up">"Momen sederhana yang justru paling berkesan di hati."</p>
+                <div class="photo-collage" data-aos="zoom-in">
+                    <div class="photo-item clickable-photo"><img src="galeri/foto21.jpg" alt=""></div>
+                    <div class="photo-item clickable-photo"><img src="galeri/foto22.jpg" alt=""></div>
+                    <div class="photo-item clickable-photo"><img src="galeri/foto23.jpg" alt=""></div>
+                    <div class="photo-item clickable-photo"><img src="galeri/foto24.jpg" alt=""></div>
+                    <div class="photo-item clickable-photo"><img src="galeri/foto25.jpg" alt=""></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-green">
+            <div class="content-wrapper">
+                <div class="chapter-num" data-aos="fade-down">Bab Enam</div>
+                <h2 class="chapter-title" data-aos="fade-up">My luvee</h2>
+                <p class="desc" data-aos="fade-up">"Your presence is not a scorching sun, but the soothing moonlight that washes away my weariness in silence..."</p>
+                <div class="photo-collage" data-aos="zoom-in">
+                    <div class="photo-item clickable-photo"><img src="galeri/foto26.jpg" alt=""></div>
+                    <div class="photo-item clickable-photo"><img src="galeri/foto27.jpg" alt=""></div>
+                    <div class="photo-item clickable-photo"><img src="galeri/foto28.jpg" alt=""></div>
+                    <div class="photo-item clickable-photo"><img src="galeri/foto29.jpg" alt=""></div>
+                    <div class="photo-item clickable-photo"><img src="galeri/foto30.jpg" alt=""></div>
+                </div>
+            </div>
+        </section>
+
+        <div class="footer">
+            <h2 style="font-family: 'Playfair Display', serif; font-size: 3rem; margin-bottom: 20px;">terima & kasih</h2>
+            <p style="margin-bottom: 30px; font-style: italic;">Ada satu hal lagi...</p>
+            <button class="btn-open-video" onclick="playVideo()">
+                🎥 Putar Video Spesial
+            </button>
+        </div>
+<div id="video-modal" class="modal-overlay">
         <div class="close-modal-btn" onclick="closeVideo()">&times;</div>
         
         <div class="video-wrapper-stack">
-            <iframe 
-                id="myVideo" 
-                src="" 
-                title="YouTube video player" 
-                frameborder="0" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                allowfullscreen>
-            </iframe>
+            <video id="myVideo" controls>
+                <source src="video/your-video.mp4" type="video/mp4">
+                Browser kamu tidak support video.
+            </video>
             
             <button class="cute-close-btn" onclick="closeVideo()">
                 💖 Tutup Video
@@ -399,131 +195,6 @@
     </div>
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script>
-        // --- SETUP SCROLL & ANIMASI ---
-        if (history.scrollRestoration) { history.scrollRestoration = 'manual'; }
-        window.scrollTo(0, 0);
-        window.onload = function() { window.scrollTo(0, 0); }
-        AOS.init({ duration: 1000, once: false });
-        
-        const intro = document.getElementById('intro');
-        const music = document.getElementById('bg-music');
-        const videoModal = document.getElementById('video-modal');
-        const iframeVid = document.getElementById('myVideo');
-        const photoStoryModal = document.getElementById('photo-story-modal');
-        const storyImgPlaceholder = document.getElementById('story-img-placeholder');
-        const storyDescPlaceholder = document.getElementById('story-desc-placeholder');
-
-        // GANTI ID VIDEO YOUTUBE DI SINI
-        const youtubeLink = "https://www.youtube.com/embed/VIDEO_ID_KAMU?autoplay=1"; 
-
-        // --- FUNGSI 1: CEK PASSWORD ---
-        function checkPassword() {
-            var input = document.getElementById('pass-input').value;
-            if(input.toLowerCase() === "buneoo sayang luvee") {
-                document.getElementById('password-screen').style.opacity = '0';
-                setTimeout(() => {
-                    document.getElementById('password-screen').style.display = 'none';
-                    // MUNCULKAN AMPLOP
-                    document.getElementById('envelope-screen').style.display = 'flex';
-                }, 800);
-            } else {
-                alert("Password salah sayang :p");
-            }
-        }
-
-        // --- FUNGSI 2: BUKA AMPLOP ---
-        function openEnvelope() {
-            const envWrapper = document.getElementById('envelope');
-            envWrapper.classList.add('open');
-            document.querySelector('.tap-hint').style.display = 'none';
-        }
-
-        // --- FUNGSI 3: TUTUP AMPLOP -> MASUK INTRO ---
-        function goToIntro(event) {
-            event.stopPropagation(); // Biar ga trigger klik amplop
-            document.getElementById('envelope-screen').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('envelope-screen').style.display = 'none';
-                // Intro sudah ada di belakang (z-index lebih kecil), jadi otomatis kelihatan
-            }, 1000);
-        }
-
-        // --- FUNGSI 4: MULAI GALERI (GESER INTRO) ---
-        function startGallery() {
-            intro.style.transform = 'translateY(-100%)';
-            music.play().catch(e => console.log("Audio perlu interaksi user"));
-        }
-
-        // --- DATABASE CERITA ---
-        const photoCaptions = {
-            'foto1.jpg': 'awalnya malu banget ajak kamu foto, tapi aku kan keren yah, dengan gagah berani aku bilang foto yuuu, ehh bidadarinya mauu.',
-            'foto2.jpg': 'foto gini tu lucu banget, dan first time aku ajak kamu mlipir di pinggir jalan ehe.',
-            'foto3.jpg': 'kedinginan di jalan mampir kedai buat nunggu kabut memeluk kita.',
-            'foto4.jpg': 'perpusda pertama yang mengajarkan aku khususnya, bahwa buku saja bisa ngga dibaca kalau dekat kamuuu.',
-            'foto5.jpg': 'pulang dari bedakah dengan dinginnya kabut eh langsung jajan ess ekeke, ini klo ada mama pasti dibilang ess terosss.',
-            'foto6.jpg': 'ini menjer, dimana kita memanjakan mata dengan memandang hamparan air yang membendung rindu tak usai, intinya sayang takut naik kapal wkwkw.',
-            'foto7.jpg': 'mengira dan menerka masa depan di atas khayangan, menemani lembutnya sinar mentari dan udara sejuk yang ikut merayakan kita.',
-            'foto8.jpg': 'yeayyy pletukkk, next ke sini lagi yahhh cayanggg, mau bbq-an kann ayow ayowww.',
-            'foto9.jpg': 'gatau pokoknya ini cantikkk kebangetennn eheee lopp.',
-            'foto10.jpg': 'ini di panama, kok ga keliatan panamanya? yahh dimanapun berada klo sama luve mah alam pun baper liatnyaaa.',
-            'foto11.jpg': 'ini aku berterimakasih sama tonooooo wkwkwkwwkwkwk.',
-            'foto12.jpg': 'idung pedang sok-sokan di gede gedein wkwkwk, btw upil mau upil?.',
-            'foto13.jpg': 'cembeyut ajaa masi cyutttttt.',
-            'foto14.jpg': 'idi idiiiiii awww lucunaaaaaaa cewe ciapaciiii.',
-            'foto15.jpg': 'ala alaaa kemayuneee ini mah lagi salting bcs liat kegantengan sang author(abimanyu) wkwkw.',
-            'foto16.jpg': 'ini mam geprek bu mar, katanya ngidam bangett, okeh sayang apa sih yang engga buat dede.',
-            'foto17.jpg': 'abi sama umi lagi beli nasi goreng ya anak-anak, sebentar lagi pulang, kalian jangan nakall.',
-            'foto18.jpg': 'mie ayam rempah, oh yaa kasian yah sebelah ngga ada yang beli hiksss, ayoo beliii.',
-            'foto19.jpg': 'nah kalau yang ini mah saung bu mansur, tau ga luvv kamu disini cantiknya kebangeten asliii, kalau di sastrain mah, bak paku yang tunduk dengan palu namun ia semakin menyatu dengan kayu.',
-            'foto20.jpg': 'look at our eyes, bendul bendul bangun bobo langsung mam buburr om aan wkwkw, btw gas lagii ayuk.',
-            'foto21.jpg': 'ini jujur style paling aku sukaaa bcs sayang sukakkkkkkk dannn sayanggg juga ihh masyaallah meleleh akhi wahai ukhti.',
-            'foto22.jpg': 'spidy spidyyy, ga nyangka bakal couple wkwkw, sampe sekarang klo aku cuci ati atiiii banget bahkan gamau aku laundryyy huhuu, timaaciii luvvvvv.',
-            'foto23.jpg': 'ini part di omelin gegara ngga ikut ngaji masuk ke masjid huhu, tapii sukaaaaa, perhatian banget sih ning ehe.',
-            'foto24.jpg': 'jujur yaaa sayang, ihhh kamu maaaa bikin aku was-was bangettt jealous bangettt huhu, tapi dibalik itu semua tau kannnn aku sayang banget sama kamuu luvv, btw narinya bagus bangett ehhh, lincah banget asli dah, curiga biru bakal selincah kamu deh.',
-            'foto25.jpg': 'wakil dan ketua panitia, terimakasiii KSR untuk segala riweh mumetnya, but gapapa aku dapet nihh my bubub yang selalu jadi support akuuuuu.',
-            'foto26.jpg': 'luvee look bunga di belakang aja malu lihat kamu lhooooo, one day kita punya taman bunga yang banyak yah sayanggg.',
-            'foto27.jpg': 'tuhhh sayang maaa canciii bangett, gimana aku ga was-was aghhh, lope uuu.',
-            'foto28.jpg': 'hayoloooo cupang pertamaa, oza hidup lagiii, ini kalau sayang jago ngerawat aku tambahin deeee seriusssssss.',
-            'foto29.jpg': 'mam nasgor di dgazz, yah banyak nyamuk tapi banyak cerita, ihh kodokkk jahat bett asli dah huhu, untung aku cowo kamuuu mweheh, lopuuuu.',
-            'foto30.jpg': 'dannn yang ini...... paling aku sukaa, sayang dengan teduh binar matanya menyiratkan keindahan ciptaan sang maha pengasih, bagai rembulan yang selalu menyinari bumi dengan heningnya malam, disitulah aku selalu melihat binar matamu lail.....',
-        };
-
-        document.querySelectorAll('.clickable-photo').forEach(item => {
-            item.addEventListener('click', function() {
-                const imgElement = this.querySelector('img');
-                const imgSrc = imgElement.getAttribute('src');
-                const filename = imgSrc.split('/').pop();
-                
-                const caption = photoCaptions[filename] || "Kenangan indah yang tak terlupakan, tersimpan rapi di sini.";
-                
-                storyImgPlaceholder.src = imgSrc;
-                storyDescPlaceholder.innerText = caption;
-                photoStoryModal.style.display = 'flex';
-            });
-        });
-
-        function closePhotoStory(event) {
-            if (event.target === photoStoryModal) {
-                photoStoryModal.style.display = 'none';
-            }
-        }
-
-        function forceClosePhotoStory() {
-            photoStoryModal.style.display = 'none';
-        }
-
-        function playVideo() {
-            videoModal.style.display = 'flex';
-            iframeVid.src = youtubeLink; 
-            music.pause(); 
-        }
-
-        function closeVideo() {
-            videoModal.style.display = 'none';
-            iframeVid.src = ""; 
-            music.play();
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>

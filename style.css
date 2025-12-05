@@ -1,0 +1,257 @@
+/* --- RESET & BASIC --- */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { 
+    overflow-x: hidden; 
+    background-color: #F4F1EA; 
+    color: #333;
+    font-family: 'Lora', serif;
+}
+
+/* --- BACKGROUND TEXTURE --- */
+body::before {
+    content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background-image: url("https://www.transparenttextures.com/patterns/cream-paper.png");
+    opacity: 0.5; pointer-events: none; z-index: 999;
+}
+
+/* =========================================
+   1. PASSWORD SCREEN
+========================================= */
+/* =========================================
+           1. PASSWORD SCREEN (LAYOUT RAPI & ELEGAN)
+        ========================================= */
+        #password-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            background: #111; z-index: 30000;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            color: #F4F1EA; transition: opacity 0.8s ease;
+            gap: 15px; /* Jarak otomatis antar elemen */
+        }
+
+        /* Judul Besar (6 KAMU) */
+        .pass-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 4rem; 
+            letter-spacing: 5px;
+            margin: 0;
+            line-height: 1;
+        }
+
+        /* Sub-judul (.kamu dan seisinya.) */
+        .pass-sub {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            opacity: 0.7;
+            margin-bottom: 20px; /* Jarak agak jauh ke input */
+        }
+
+        /* Teks Instruksi (masukan di sini yah) */
+        .pass-label {
+            font-family: 'Lora', serif;
+            font-style: italic;
+            font-size: 1rem;
+            color: #ccc;
+            margin-bottom: 5px;
+        }
+        
+        /* Input Field */
+        .pass-input {
+            padding: 12px 25px; 
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1rem;
+            background: transparent;
+            color: #fff;
+            border: 1px solid rgba(244, 241, 234, 0.5); 
+            border-radius: 50px;
+            outline: none;
+            text-align: center;
+            width: 280px;
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
+        }
+
+        /* Efek Input Fokus */
+        .pass-input:focus {
+            border-color: #F4F1EA;
+            width: 300px; /* Melebar dikit */
+            background: rgba(255,255,255,0.05);
+        }
+        
+        /* Tombol Masuk */
+        .btn-submit {
+            padding: 12px 40px;
+            background: #F4F1EA;
+            color: #111;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            margin-top: 10px;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(244, 241, 234, 0.3);
+            background: #fff;
+        }
+
+/* =========================================
+   2. LETTER SCREEN (SURAT PANJANG SCROLL)
+========================================= */
+#letter-screen {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+    background: #D8E2DC; /* Background Sage Green */
+    z-index: 20000; display: none; /* Hidden awal */
+    justify-content: center; align-items: center;
+    padding: 20px; transition: opacity 1s ease;
+}
+
+.letter-paper {
+    background: #fff;
+    width: 100%; max-width: 600px;
+    height: 80vh; /* Tinggi kertas 80% layar */
+    padding: 40px;
+    border-radius: 5px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    display: flex; flex-direction: column;
+    position: relative;
+}
+
+/* Hiasan Kertas */
+.letter-paper::before {
+    content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 10px;
+    background: repeating-linear-gradient(45deg, #d63031, #d63031 10px, #fff 10px, #fff 20px, #0984e3 20px, #0984e3 30px, #fff 30px, #fff 40px);
+}
+
+.letter-header {
+    text-align: center; margin-bottom: 20px;
+    font-family: 'Playfair Display', serif; font-size: 2rem; color: #222;
+    border-bottom: 2px solid #eee; padding-bottom: 20px;
+}
+
+/* AREA TEKS YANG BISA DI-SCROLL */
+.letter-scroll-area {
+    flex: 1; /* Mengisi sisa ruang */
+    overflow-y: auto; /* Scroll aktif jika teks panjang */
+    padding-right: 10px; /* Jarak scrollbar */
+    font-family: 'Lora', serif; font-size: 1.1rem; line-height: 1.8; color: #444;
+    white-space: pre-line; /* Biar Enter terbaca */
+    text-align: justify;
+}
+
+/* Custom Scrollbar biar cantik */
+.letter-scroll-area::-webkit-scrollbar { width: 6px; }
+.letter-scroll-area::-webkit-scrollbar-thumb { background-color: #ccc; border-radius: 10px; }
+.letter-scroll-area::-webkit-scrollbar-track { background: #f1f1f1; }
+
+.letter-footer {
+    margin-top: 20px; text-align: center; border-top: 2px solid #eee; padding-top: 20px;
+}
+
+.btn-next-chapter {
+    padding: 12px 40px; background: #222; color: #fff; border: none;
+    font-family: 'Montserrat', sans-serif; font-weight: 600; border-radius: 50px;
+    cursor: pointer; transition: 0.3s; letter-spacing: 1px;
+}
+.btn-next-chapter:hover { background: #444; transform: translateY(-2px); }
+
+
+/* =========================================
+   STYLE HALAMAN UTAMA (6 CHAPTER)
+========================================= */
+#intro {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+    background: #111; color: #F4F1EA; z-index: 10000;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1);
+}
+.main-title { font-family: 'Playfair Display', serif; font-size: 6rem; letter-spacing: 5px; line-height: 1; text-align: center;}
+.sub-title { font-family: 'Montserrat', sans-serif; letter-spacing: 3px; text-transform: uppercase; margin-top: 20px; opacity: 0.8; text-align: center; }
+.btn-start {
+    margin-top: 50px; padding: 15px 50px; border: 1px solid #F4F1EA; background: transparent; 
+    color: #F4F1EA; cursor: pointer; font-family: 'Montserrat', sans-serif; letter-spacing: 2px;
+    transition: 0.3s;
+}
+.btn-start:hover { background: #F4F1EA; color: #111; }
+
+section {
+    min-height: 100vh; padding: 80px 20px;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    position: relative; overflow: hidden;
+}
+.bg-cream { background-color: #F4F1EA; color: #444; }
+.bg-green { background-color: #D8E2DC; color: #3a4b40; }
+.content-wrapper { max-width: 1000px; width: 100%; z-index: 2; }
+
+.chapter-num { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: #999; text-transform: uppercase; letter-spacing: 2px; text-align: center; margin-bottom: 10px; }
+.chapter-title { font-family: 'Playfair Display', serif; font-size: 3.5rem; text-align: center; margin-bottom: 40px; color: #222; }
+.desc { text-align: center; max-width: 600px; margin: 0 auto 50px auto; font-size: 1.1rem; line-height: 1.8; font-style: italic; color: #666; }
+
+/* PHOTO COLLAGE */
+.photo-collage { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding: 20px; margin-bottom: 50px; }
+.photo-item { position: relative; height: 250px; border-radius: 6px; overflow: hidden; box-shadow: 5px 10px 20px rgba(0,0,0,0.15); transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); cursor: pointer; background: #fff; border: 4px solid #fff; }
+.photo-item img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+.photo-item:nth-child(1) { grid-column: span 2; grid-row: span 2; height: 100%; transform: rotate(-2deg); }
+.photo-item:nth-child(2) { transform: rotate(3deg) translateY(20px); }
+.photo-item:nth-child(3) { transform: rotate(-1deg); }
+.photo-item:nth-child(4) { grid-column: span 2; transform: rotate(2deg); }
+.photo-item:nth-child(5) { transform: rotate(-3deg); }
+.photo-item:hover { transform: scale(1.05) rotate(0deg) translateY(0) !important; z-index: 100 !important; box-shadow: 15px 25px 50px rgba(0,0,0,0.3); border-color: #f1c40f; }
+
+.footer { padding: 100px 20px; text-align: center; background: #1a1a1a; color: #fff; }
+
+.btn-open-video {
+    margin-top: 20px; padding: 15px 40px; background-color: #ff9eb5; color: #fff;
+    font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 1.2rem;
+    border: none; border-radius: 50px; cursor: pointer; box-shadow: 0 5px 20px rgba(255, 158, 181, 0.4);
+    transition: transform 0.3s ease; animation: pulse 2s infinite; 
+}
+.btn-open-video:hover { transform: scale(1.1); background-color: #ff85a3; }
+@keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+/* MODAL STYLES */
+@keyframes fadeInEffect { from { opacity: 0; } to { opacity: 1; } }
+@keyframes popUpEffect { from { opacity: 0; transform: scale(0.9) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.97); display: none; justify-content: center; align-items: center; z-index: 11000; padding: 20px; animation: fadeInEffect 0.4s ease-out; }
+.close-modal-btn { position: absolute; top: 20px; right: 30px; font-size: 3rem; color: #fff; cursor: pointer; z-index: 11002; transition: 0.3s; }
+.close-modal-btn:hover { transform: rotate(90deg) scale(1.1); color: #ff6b6b; }
+
+/* Wrapper Video */
+.video-wrapper-stack { display: flex; flex-direction: column; align-items: center; width: 90%; max-width: 800px; animation: popUpEffect 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+#video-modal iframe { width: 100%; aspect-ratio: 16/9; box-shadow: 0 0 50px black; border-radius: 8px; }
+.cute-close-btn { margin-top: 25px; padding: 12px 35px; background-color: #ff9eb5; color: white; border: none; border-radius: 50px; font-family: 'Montserrat', sans-serif; font-weight: 600; cursor: pointer; box-shadow: 0 5px 15px rgba(255, 158, 181, 0.4); transition: all 0.3s ease; display: flex; align-items: center; gap: 10px; }
+.cute-close-btn:hover { background-color: #ff85a3; transform: translateY(-3px) scale(1.05); }
+
+/* Photo Story Modal */
+.photo-story-content { display: flex; background: #F4F1EA; max-width: 1100px; width: 100%; max-height: 85vh; border-radius: 8px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.5); animation: popUpEffect 0.5s cubic-bezier(0.19, 1, 0.22, 1); }
+.story-img-container { flex: 1.5; background: #000; display: flex; align-items: center; justify-content: center; }
+.story-img-container img { width: 100%; height: 100%; object-fit: contain; max-height: 85vh; }
+.story-text-container { flex: 1; padding: 40px; overflow-y: auto; display: flex; flex-direction: column; justify-content: center; }
+.story-title { font-family: 'Playfair Display', serif; font-size: 2rem; margin-bottom: 20px; color: #222; }
+.story-desc { font-family: 'Lora', serif; font-size: 1.1rem; line-height: 1.8; color: #555; white-space: pre-line; }
+.close-text-btn { display: none; margin-top: 20px; padding: 10px; background: #333; color: white; text-align: center; border-radius: 5px; cursor: pointer; }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .main-title { font-size: 4rem; }
+    .chapter-title { font-size: 2.5rem; }
+    .photo-collage { grid-template-columns: 1fr; }
+    .photo-item { height: 250px; grid-column: auto !important; grid-row: auto !important; margin-bottom: 10px; }
+    .photo-story-content { flex-direction: column; width: 95%; height: 85vh; max-height: 85vh; }
+    .story-img-container { flex: 0 0 50%; height: 50%; background: #000; }
+    .story-img-container img { object-fit: contain; width: 100%; height: 100%; }
+    .story-text-container { flex: 1; height: auto; padding: 20px; justify-content: flex-start; overflow-y: auto; }
+    .story-title { font-size: 1.5rem; margin-top: 0; }
+    .story-desc { font-size: 1rem; }
+    .close-text-btn { display: block; }
+}
+
