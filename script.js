@@ -30,29 +30,38 @@ function checkPassword() {
 }
 
 // --- 4. LOGIKA SURAT & NAVIGASI ---
+// --- 4. LOGIKA SURAT & NAVIGASI ---
 function closeLetter() {
-    // Hilangkan Surat
+    // 1. AMBIL & MAINKAN MUSIK
+    // Kita taruh di paling atas biar pas klik langsung bunyi
+    const music = document.getElementById('bg-music');
+    
+    // Set volume biar ga kaget (opsional, 0.5 itu 50%)
+    music.volume = 0.5; 
+    
+    music.play().then(() => {
+        console.log("Musik berhasil diputar!");
+    }).catch(e => {
+        console.log("Gagal putar musik (Browser memblokir):", e);
+    });
+
+    // 2. ANIMASI TRANSISI HALAMAN (Logika Lama)
     document.getElementById('letter-screen').style.opacity = '0';
     
     setTimeout(() => {
+        // Hilangkan surat
         document.getElementById('letter-screen').style.display = 'none';
         
-        // MUNCULKAN MAIN CONTENT
+        // Munculkan konten utama
         const mainContent = document.getElementById('main-content');
         mainContent.style.display = 'block';
         
-        // Refresh Animasi AOS
-        AOS.refresh();
+        // Refresh animasi AOS
+        if (typeof AOS !== 'undefined') {
+            AOS.refresh();
+        }
         
-        // Nyalakan Musik (lagu-romantis.mp3)
-        // Pastikan file 'lagu-romantis.mp3' ada di folder yang sama
-        music.play().catch(e => console.log("Audio perlu interaksi user"));
-        
-    }, 1000);
-}
-
-function startGallery() {
-    intro.style.transform = 'translateY(-100%)';
+    }, 1000); // Tunggu 1 detik sesuai durasi transisi CSS
 }
 
 // --- 5. LOGIKA VIDEO PLAYER (LOCAL FILE) ---
